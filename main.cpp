@@ -1,66 +1,60 @@
 /*#################################
-# Title : template                 #
+# Title : friend                   #
 # Author : Paulz                   #
 # Date : 19/10/24                  #
 # Version: 1.0.0                   #
 ##################################*/
+/*
+ * Ce mot-clé friend permet à une fonction ou à une classe d'accéder
+ *  aux membres privés ou protégés d'une autre classe.
+ *  Cela peut être utile pour permettre à certaines fonctions ou classes de
+ *  travailler en étroite collaboration sans exposer
+ *  les détails d'implémentation à tout le monde.
+ */
+
+
 #include <iostream>
-#include <string>
 
-// Fonction template
-template <typename T>
-T add(T a, T b) {
-    return a + b;
-}
-
-// Classe template
-template <typename T>
-class Box {
+// Classe Rectangle
+class Rectangle {
 private:
-    T value;
+    double width;  // Largeur privée
+    double height; // Hauteur privée
 
 public:
     // Constructeur
-    Box(T val) : value(val) {}
+    Rectangle(double w, double h) : width(w), height(h) {}
 
-    // Méthode pour obtenir la valeur
-    T getValue() const {
-        return value;
-    }
+    // Déclaration d'une fonction friend qui peut accéder aux membres privés
+    friend double calculateArea(const Rectangle& rect);
 
-    // Méthode pour changer la valeur
-    void setValue(T val) {
-        value = val;
+    // Déclaration d'une classe friend qui peut accéder aux membres privés
+    friend class RectangleInfo;
+};
+
+// Fonction friend qui peut accéder aux membres privés de Rectangle
+double calculateArea(const Rectangle& rect) {
+    return rect.width * rect.height; // Accès aux membres privés
+}
+
+// Classe friend qui peut accéder aux membres privés de Rectangle
+class RectangleInfo {
+public:
+    void printInfo(const Rectangle& rect) {
+        std::cout << "Largeur: " << rect.width << ", Hauteur: " << rect.height << std::endl;
     }
 };
 
-int main(int arc , char *arcv[]) {
+int main(int arc, char **arv) {
+    // Création d'un objet Rectangle
+    Rectangle rect(5.0, 3.0);
 
-    // Utilisation de la fonction template avec int
-    int intResult = add<int>(5, 3);
-    std::cout << "Addition de deux int: " << intResult << std::endl;
+    // Utilisation de la fonction friend pour calculer l'aire
+    std::cout << "Aire du rectangle: " << calculateArea(rect) << std::endl;
 
-    // Utilisation de la fonction template avec double
-    double doubleResult = add<double>(2.5, 3.1);
-    std::cout << "Addition de deux double: " << doubleResult << std::endl;
-
-    // Utilisation de la fonction template avec std::string
-    std::string strResult = add<std::string>("Hello, ", "World!");
-    std::cout << "Concaténation de deux strings: " << strResult << std::endl;
-
-    // Utilisation de la classe template avec int
-    Box<int> intBox(10);
-    std::cout << "Valeur initiale du Box<int>: " << intBox.getValue() << std::endl;
-    intBox.setValue(20);
-    std::cout << "Nouvelle valeur du Box<int>: " << intBox.getValue() << std::endl;
-
-    // Utilisation de la classe template avec double
-    Box<double> doubleBox(3.14);
-    std::cout << "Valeur initiale du Box<double>: " << doubleBox.getValue() << std::endl;
-
-    // Utilisation de la classe template avec std::string
-    Box<std::string> stringBox("C++ Templates");
-    std::cout << "Valeur initiale du Box<std::string>: " << stringBox.getValue() << std::endl;
+    // Utilisation de la classe friend pour afficher les informations
+    RectangleInfo info;
+    info.printInfo(rect); // Accès aux membres privés via la classe friend
 
     return 0;
 }
