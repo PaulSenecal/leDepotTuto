@@ -1,59 +1,66 @@
 /*#################################
-# Title : Cast                     #
+# Title : template                 #
 # Author : Paulz                   #
-# Date : 18/10/24                  #
+# Date : 19/10/24                  #
 # Version: 1.0.0                   #
 ##################################*/
 #include <iostream>
-#include <typeinfo>
+#include <string>
 
-// Classe de base
-class Base {
+// Fonction template
+template <typename T>
+T add(T a, T b) {
+    return a + b;
+}
+
+// Classe template
+template <typename T>
+class Box {
+private:
+    T value;
+
 public:
-    virtual void display() {
-        std::cout << "Base class display" << std::endl;
+    // Constructeur
+    Box(T val) : value(val) {}
+
+    // Méthode pour obtenir la valeur
+    T getValue() const {
+        return value;
+    }
+
+    // Méthode pour changer la valeur
+    void setValue(T val) {
+        value = val;
     }
 };
 
-// Classe dérivée
-class Derived : public Base {
-public:
-    void display() override {
-        std::cout << "Derived class display" << std::endl;
-    }
-};
+int main(int arc , char *arcv[]) {
 
-int main(int argc, char **argv) {
+    // Utilisation de la fonction template avec int
+    int intResult = add<int>(5, 3);
+    std::cout << "Addition de deux int: " << intResult << std::endl;
 
-    // 1. static_cast
-    int a = 10;
-    double b = static_cast<double>(a); // Convertit int en double
-    std::cout << "static_cast result: " << b << std::endl;
+    // Utilisation de la fonction template avec double
+    double doubleResult = add<double>(2.5, 3.1);
+    std::cout << "Addition de deux double: " << doubleResult << std::endl;
 
-    // 2. const_cast
-    const int x = 42;
-    int* y = const_cast<int*>(&x); // Retire la constance de x
-    *y = 100; // Ne pas faire ça dans un code réel, c'est dangereux !
-    std::cout << "const_cast result: " << *y << std::endl; // Affiche 100
+    // Utilisation de la fonction template avec std::string
+    std::string strResult = add<std::string>("Hello, ", "World!");
+    std::cout << "Concaténation de deux strings: " << strResult << std::endl;
 
-    // 3. dynamic_cast
-    Base* basePtr = new Derived(); // Pointeur de base pointant vers un objet dérivé
-    Derived* derivedPtr = dynamic_cast<Derived*>(basePtr); // Cast dynamique
-    if (derivedPtr) {
-        derivedPtr->display(); // Appelle display() de Derived
-    } else {
-        std::cout << "dynamic_cast failed" << std::endl;
-    }
+    // Utilisation de la classe template avec int
+    Box<int> intBox(10);
+    std::cout << "Valeur initiale du Box<int>: " << intBox.getValue() << std::endl;
+    intBox.setValue(20);
+    std::cout << "Nouvelle valeur du Box<int>: " << intBox.getValue() << std::endl;
 
-    // 4. reinterpret_cast
-    int num = 65;
-    char* charPtr = reinterpret_cast<char*>(&num); // Interprète l'adresse d'un int comme un char*
-    std::cout << "reinterpret_cast result: " << *charPtr << std::endl; // Affiche le premier caractère correspondant à la valeur de num
+    // Utilisation de la classe template avec double
+    Box<double> doubleBox(3.14);
+    std::cout << "Valeur initiale du Box<double>: " << doubleBox.getValue() << std::endl;
 
-    // Nettoyage
-    delete basePtr;
+    // Utilisation de la classe template avec std::string
+    Box<std::string> stringBox("C++ Templates");
+    std::cout << "Valeur initiale du Box<std::string>: " << stringBox.getValue() << std::endl;
 
     return 0;
 }
-
-
