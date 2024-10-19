@@ -1,60 +1,96 @@
 /*#################################
-# Title : friend                   #
+# Title : pointer                  #
 # Author : Paulz                   #
 # Date : 19/10/24                  #
 # Version: 1.0.0                   #
 ##################################*/
 /*
- * Ce mot-clé friend permet à une fonction ou à une classe d'accéder
- *  aux membres privés ou protégés d'une autre classe.
- *  Cela peut être utile pour permettre à certaines fonctions ou classes de
- *  travailler en étroite collaboration sans exposer
- *  les détails d'implémentation à tout le monde.
+Les pointeurs en C++ sont des variables qui stockent
+l'adresse d'une autre variable. Cependant,
+la gestion manuelle des pointeurs peut être
+source d'erreurs comme des fuites de mémoire.
+Pour pallier ces problèmes, C++ introduit les pointeurs intelligents(c++11)
+à travers la bibliothèque standard (<memory>),
+qui gèrent automatiquement la mémoire et
+libèrent les ressources lorsqu'elles ne sont plus utilisées.
  */
 
-
+//  CLASSIC POINTER , can be deprecied
+/*
 #include <iostream>
 
-// Classe Rectangle
-class Rectangle {
-private:
-    double width;  // Largeur privée
-    double height; // Hauteur privée
+int main(int arc ,char **arv) {
+    // Création d'une variable entière
+    int a = 10;
 
-public:
-    // Constructeur
-    Rectangle(double w, double h) : width(w), height(h) {}
+    // Création d'un pointeur qui stocke l'adresse de a
+    int* ptr = &a;
 
-    // Déclaration d'une fonction friend qui peut accéder aux membres privés
-    friend double calculateArea(const Rectangle& rect);
+    // Affichage de la valeur de a à travers le pointeur
+    std::cout << "Valeur de a: " << *ptr << std::endl;
 
-    // Déclaration d'une classe friend qui peut accéder aux membres privés
-    friend class RectangleInfo;
-};
+    // Allouer dynamiquement un entier
+    int* dynamicInt = new int(20);
 
-// Fonction friend qui peut accéder aux membres privés de Rectangle
-double calculateArea(const Rectangle& rect) {
-    return rect.width * rect.height; // Accès aux membres privés
+    // Afficher la valeur de l'entier alloué dynamiquement
+    std::cout << "Valeur du pointeur alloué dynamiquement: " << *dynamicInt << std::endl;
+
+    // Libérer la mémoire allouée dynamiquement
+    delete dynamicInt;
+
+    return 0;
 }
+*/
 
-// Classe friend qui peut accéder aux membres privés de Rectangle
-class RectangleInfo {
-public:
-    void printInfo(const Rectangle& rect) {
-        std::cout << "Largeur: " << rect.width << ", Hauteur: " << rect.height << std::endl;
+//  SMART POINTER  sont des classes qui gèrent automatiquement la durée de vie des objets pointé
+/*
+#include <iostream>
+#include <memory> // Pour les pointeurs intelligents
+
+int main(int arc , char **arv) {
+    // Création d'un pointeur intelligent unique
+    std::unique_ptr<int> uniquePtr = std::make_unique<int>(10);
+
+    // Accès à la valeur via le pointeur intelligent
+    std::cout << "Valeur de uniquePtr: " << *uniquePtr << std::endl;
+
+    // Allouer dynamiquement un tableau avec un pointeur intelligent
+    std::unique_ptr<int[]> arrayPtr = std::make_unique<int[]>(5);
+    arrayPtr[0] = 1;
+    arrayPtr[1] = 2;
+    arrayPtr[2] = 3;
+    arrayPtr[3] = 4;
+    arrayPtr[4] = 5;
+
+    // Affichage des éléments du tableau
+    std::cout << "Valeurs du tableau: ";
+    for (int i = 0; i < 5; ++i) {
+        std::cout << arrayPtr[i] << " ";
     }
-};
+    std::cout << std::endl;
 
-int main(int arc, char **arv) {
-    // Création d'un objet Rectangle
-    Rectangle rect(5.0, 3.0);
+    // Aucune libération manuelle de mémoire n'est nécessaire !
+    // La mémoire sera automatiquement libérée lorsque uniquePtr sortira de la portée.
 
-    // Utilisation de la fonction friend pour calculer l'aire
-    std::cout << "Aire du rectangle: " << calculateArea(rect) << std::endl;
+    return 0;
+}
+*/
 
-    // Utilisation de la classe friend pour afficher les informations
-    RectangleInfo info;
-    info.printInfo(rect); // Accès aux membres privés via la classe friend
+// SHARE SMART POINTER
+#include <iostream>
+#include <memory> // Pour les pointeurs intelligents
+
+int main(int arc , char **arv) {
+    // Création de deux pointeurs intelligents partagés
+    std::shared_ptr<int> sharedPtr1 = std::make_shared<int>(100);
+    std::shared_ptr<int> sharedPtr2 = sharedPtr1; // sharedPtr2 partage la même ressource
+
+    // Affichage de la valeur
+    std::cout << "Valeur de sharedPtr1: " << *sharedPtr1 << std::endl;
+    std::cout << "Valeur de sharedPtr2: " << *sharedPtr2 << std::endl;
+
+    // Affichage du nombre de références à l'objet
+    std::cout << "Nombre de références : " << sharedPtr1.use_count() << std::endl;
 
     return 0;
 }
